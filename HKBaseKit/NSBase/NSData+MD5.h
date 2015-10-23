@@ -1,5 +1,5 @@
 //
-//  NSString+MD5.h
+//  NSData+MD5.h
 //  iosMD5
 //
 //  Created by demeng on 11-12-26.
@@ -8,9 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "NSString+MD5.h"
  
-@interface NSString(MD5)
+@interface NSData(MD5)
  
 - (NSString *)MD5;
  

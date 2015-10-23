@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UIBaseKit.h"
+#import "UIBaseController.h"
 #import "UIBaseTabBarView.h"
 
 @protocol CustomTabBarControllerDelegate;

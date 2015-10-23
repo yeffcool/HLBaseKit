@@ -27,6 +27,11 @@ static SkinControllerCenter * sharedSingleton = nil;
 {
     self = [super init];
     self.arrayDelegate = [[NSMutableArray alloc] init];
+    [self setDefaultBackgroundColorWithRed:240.0/255.0 green:240.0/255.0 blue:240.0/255.0 alpha:255.0/255.0];
+    [self setDefaultBackgroundImageWithString:@""];
+    [self setDefaultForegroundColorWithRed:33.0/255.0 green:41.0/255.0 blue:44.0/255.0 alpha:255.0/255.0];
+    [self setDefaultForegroundImageWithString:@""];
+    [self setDefaultFontColorWithRed:249.0/255.0 green:82.0/255.0 blue:54.0/255.0 alpha:255.0/255.0];
     return self;
 }
 
@@ -178,9 +183,14 @@ static SkinControllerCenter * sharedSingleton = nil;
     }
 }
 
+- (void)setDefaultBackgroundColorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha
+{
+    self.defaultBgColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
+}
+
 - (UIColor*)loadSkinBackgroundColor
 {
-    UIColor *colorBg = SkinDefaultBgColor;
+    UIColor *colorBg = self.defaultBgColor;
     @try {
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         if (userDefaults != nil)
@@ -231,9 +241,14 @@ static SkinControllerCenter * sharedSingleton = nil;
     }
 }
 
+- (void)setDefaultBackgroundImageWithString:(NSString*)imageName
+{
+    self.defaultBgImage = imageName;
+}
+
 - (NSString*)loadSkinBackgroundImage
 {
-    NSString *strBgImage = SkinDefaultBgImage;
+    NSString *strBgImage = self.defaultBgImage;
     @try {
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         if (userDefaults != nil)
@@ -271,9 +286,14 @@ static SkinControllerCenter * sharedSingleton = nil;
     }
 }
 
+- (void)setDefaultForegroundColorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha
+{
+    self.defaultFgColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
+}
+
 - (UIColor*)loadSkinForegroundColor
 {
-    UIColor *colorFg = SkinDefaultFgColor;
+    UIColor *colorFg = self.defaultFgColor;
     @try {
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         if (userDefaults != nil)
@@ -324,9 +344,14 @@ static SkinControllerCenter * sharedSingleton = nil;
     }
 }
 
+- (void)setDefaultForegroundImageWithString:(NSString*)imageName
+{
+    self.defaultFgImage = imageName;
+}
+
 - (NSString*)loadSkinForegroundImage
 {
-    NSString *strFgImage = SkinDefaultFgImage;
+    NSString *strFgImage = self.defaultFgImage;
     @try {
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         if (userDefaults != nil)
@@ -364,9 +389,14 @@ static SkinControllerCenter * sharedSingleton = nil;
     }
 }
 
+- (void)setDefaultFontColorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha
+{
+    self.defaultFontColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
+}
+
 - (UIColor*)loadSkinFontColor
 {
-    UIColor *colorFont = [UIColor colorWithRed:255.0/255.0 green:0.0/255.0 blue:0.0/255.0 alpha:255.0/255.0];
+    UIColor *colorFont = self.defaultFontColor;
     @try {
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         if (userDefaults != nil)

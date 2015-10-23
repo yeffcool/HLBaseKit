@@ -9,6 +9,7 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "NSData+MD5.h"
  
 @implementation NSData(MD5)
  

@@ -6,10 +6,10 @@
 //  Copyright (c) 2015年 利 韩. All rights reserved.
 //
 
-#import "ClassOperation.h"
+#import "ClassUtils.h"
 #import <objc/runtime.h>
 
-@implementation ClassOperation
+@implementation ClassUtils
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // 获取对象的所有属性，不包括属性值

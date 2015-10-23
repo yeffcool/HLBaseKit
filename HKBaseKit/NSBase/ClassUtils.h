@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ClassOperation : NSObject
+@interface ClassUtils : NSObject
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // 获取对象的所有属性，不包括属性值
