@@ -28,19 +28,23 @@
     return [super init];
 }
 
-- (void)viewDidLoad
+- (void)loadView
 {
-    [super viewDidLoad];
-    
-//    SkinObject *skinObject = [[SkinControllerCenter sharedInstance] getCurrentSkinObject];
+    [super loadView];
+    //    SkinObject *skinObject = [[SkinControllerCenter sharedInstance] getCurrentSkinObject];
     if (self.navigationController != nil && self.navigationController.navigationBar != nil)
     {
-        UIImage *imageBackground = [UIImage imageNamed:@"image_transparent"];
-        [self.navigationController.navigationBar setShadowImage:[[UIImage alloc] init]];
-        [self.navigationController.navigationBar setBackgroundImage:imageBackground forBarMetrics:UIBarMetricsDefault];
-        [self.navigationController.navigationBar setTranslucent:YES];
+        [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+        self.navigationController.navigationBar.shadowImage = [UIImage new];
+        self.navigationController.navigationBar.translucent = YES;
+        [self.navigationController.view setBackgroundColor:[self updateNavigationViewBackgroundColor:self.navigationController.navigationBar]];
         
-        [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+//        UIImage *imageBackground = [UIImage imageNamed:@"image_transparent"];
+//        [self.navigationController.navigationBar setShadowImage:[[UIImage alloc] init]];
+//        [self.navigationController.navigationBar setBackgroundImage:imageBackground forBarMetrics:UIBarMetricsDefault];
+//        [self.navigationController.navigationBar setTranslucent:YES];
+
+        [self.navigationController.navigationBar setTintColor:[self updateNavigationTintColor:self.navigationController.navigationBar]];
         
         [self.navigationController.navigationBar setBarTintColor:[self updateNavigationBarTintColor:self.navigationController.navigationBar]];
         
@@ -49,12 +53,18 @@
         [self updateNavigationBar:self.navigationController.navigationBar];
     }
     
-    
     // Do any additional setup after loading the view.// Navigation
     [[SkinControllerCenter sharedInstance] addDelegate:self isOnlyExist:YES];
     
     //
     [self registerForKeyboardNotifications];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -67,9 +77,6 @@
     {
         [self updateViewControllerSkin:skinObject];
     }
-    
-//    NSString *strClassName = [NSString stringWithFormat:@"%@", self.class];
-//    [MobClick beginLogPageView:strClassName];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -120,9 +127,17 @@
     
 }
 
+- (UIColor*)updateNavigationViewBackgroundColor:(UINavigationBar*)navigationBar
+{
+    SkinObject *skinObject = [[SkinControllerCenter sharedInstance] getCurrentSkinObject];
+    return skinObject.backgroundColor;
+}
+
 - (UIColor*)updateNavigationTintColor:(UINavigationBar*)navigationBar
 {
     return [UIColor whiteColor];
+//    SkinObject *skinObject = [[SkinControllerCenter sharedInstance] getCurrentSkinObject];
+//    return skinObject.backgroundColor;
 }
 
 - (UIColor*)updateNavigationBarTintColor:(UINavigationBar*)navigationBar

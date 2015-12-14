@@ -36,4 +36,7 @@
  *  @param index <#index description#>
  */
 - (void)setContentIndex:(NSUInteger)index;
+
+- (NSUInteger)getCurrentIndexIndex;
+
 @end

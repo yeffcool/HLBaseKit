@@ -21,6 +21,10 @@
 
 + (NSData*) convertStringUTF8ToData:(NSString*)string;
 
++ (NSData*)convertIdToJsonData:(id)obj;
+
++ (NSString*)convertIdToJsonString:(id)obj;
+
 + (NSString*) convertIdToString:(id)object;
 
 + (int)convertStringToInt:(id)object;

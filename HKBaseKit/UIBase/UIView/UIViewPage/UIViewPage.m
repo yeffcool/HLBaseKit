@@ -47,6 +47,7 @@
 - (void)initialization
 {
     scrollViewPage = [[UIScrollView alloc] initWithFrame:self.bounds];
+    [scrollViewPage setUserInteractionEnabled:YES];
     scrollViewPage.showsHorizontalScrollIndicator = NO;
     scrollViewPage.showsVerticalScrollIndicator = NO;
     scrollViewPage.pagingEnabled = YES;
@@ -56,6 +57,28 @@
     pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(0, self.frame.size.height - HeightPageControl, self.frame.size.width, HeightPageControl)];
     pageControl.userInteractionEnabled = NO;
     [self addSubview:pageControl];
+    
+    self.arrayImageViews = [[NSMutableArray alloc] init];
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+//    NSLog(@"self.Frame X=%f Y=%f Width=%f Height=%f", self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
+    [scrollViewPage setFrame:self.frame];
+    [pageControl setFrame:CGRectMake(0, self.frame.size.height - HeightPageControl, self.frame.size.width, HeightPageControl)];
+    
+    if (self.arrayImageViews != nil && [self.arrayImageViews count] > 0)
+    {
+        for (int i=0; i<[self.arrayImageViews count]; i++)
+        {
+            UIImageView *imageView = [self.arrayImageViews objectAtIndex:i];
+            if (imageView != nil)
+            {
+                [imageView setFrame:CGRectMake(i * scrollViewPage.frame.size.width, 0, scrollViewPage.frame.size.width, scrollViewPage.frame.size.height)];
+            }
+        }
+    }
 }
 
 - (void)updatePageItems:(NSArray *)items
@@ -104,7 +127,7 @@
     pageControl.numberOfPages = [self.arrayPageItems count]>1 ? [self.arrayPageItems count] -2 : [self.arrayPageItems count];
     pageControl.currentPage = 0;
     
- 
+    [self.arrayImageViews removeAllObjects];
     scrollViewPage.contentSize = CGSizeMake(scrollViewPage.frame.size.width * [self.arrayPageItems count], scrollViewPage.frame.size.height);
     for (int i = 0; i < [self.arrayPageItems count]; i++)
     {
@@ -119,6 +142,8 @@
         }
         
         [scrollViewPage addSubview:imageView];
+        
+        [self.arrayImageViews addObject:imageView];
     }
     
     if ([self.arrayPageItems count] > 1)

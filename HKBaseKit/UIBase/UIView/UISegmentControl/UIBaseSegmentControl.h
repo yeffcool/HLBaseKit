@@ -20,6 +20,13 @@
     CGFloat nonRed, nonGreen, nonBlue, nonAlpha;
 }
 
+@property (nonatomic, strong) IBInspectable UIColor *selTextColor;
+@property (nonatomic, strong) IBInspectable UIColor *unselTextColor;
+@property (nonatomic, strong) IBInspectable UIColor *selBgColor;
+@property (nonatomic, strong) IBInspectable UIImage *selImage;
+@property (nonatomic, assign) IBInspectable CGFloat textSize;
+@property (nonatomic, assign) IBInspectable NSInteger isBold;
+
 @property (strong, nonatomic) id <UIBaseSegmentControlDelegate> delegate;
 @property (strong, nonatomic) NSMutableArray* arrayTitleButtons;
 @property (strong, nonatomic) NSMutableArray* arrayTitleLabels;

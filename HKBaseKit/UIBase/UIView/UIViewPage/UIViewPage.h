@@ -40,6 +40,7 @@
 @property (nonatomic, assign) id<UIViewPageDelegate> delegate;
 
 @property (nonatomic, strong) NSMutableArray *arrayPageItems;
+@property (nonatomic, strong) NSMutableArray *arrayImageViews;
 
 
 @end

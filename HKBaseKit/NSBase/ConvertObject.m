@@ -62,6 +62,39 @@
     return data;
 }
 
++ (NSData*)convertIdToJsonData:(id)obj
+{
+    NSData* jsonData = nil;
+    @try {
+        if (obj != nil)
+        {
+            NSError *error = nil;
+            jsonData = [NSJSONSerialization dataWithJSONObject:obj options:NSJSONWritingPrettyPrinted error:&error];
+        }
+    }
+    @catch (NSException *exception) {
+    }
+    
+    return jsonData;
+}
+
++ (NSString*)convertIdToJsonString:(id)obj
+{
+    NSString *string = @"";
+    @try
+    {
+        NSData *dataJson = [self convertIdToJsonData:obj];
+        if (string != nil)
+        {
+            string = [self convertDataToStringUTF8:dataJson];
+        }
+    }
+    @catch (NSException *exception) {
+    }
+    
+    return string;
+}
+
 + (NSString*) convertIdToString:(id)object
 {
     NSString *string = @"";

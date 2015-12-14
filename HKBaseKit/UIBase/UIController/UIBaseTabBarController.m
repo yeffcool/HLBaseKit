@@ -1,251 +1,224 @@
 //
-//  CustomTabBarControllerViewController.m
-//  CustomTabBarController
+//  UIBaseViewController.m
+//  XinLing
 //
-//  Created by Levey Zhu on 12/15/10.
-//  Copyright 2010 VanillaTech. All rights reserved.
+//  Created by 利 韩 on 14/12/9.
+//  Copyright (c) 2014年 利 韩. All rights reserved.
 //
 
 #import "UIBaseTabBarController.h"
-#import "UIBaseTabBarView.h"
 
-#define kTabBarHeight 50
+@interface UIBaseTabBarController ()
 
-static UIBaseTabBarController *customTabBarController;
-
-@implementation UIViewController (CustomTabBarControllerSupport)
-
-- (UIBaseTabBarController *)customTabBarController
-{
-	return customTabBarController;
-}
-
-@end
-
-@interface UIBaseTabBarController (private)
-- (void)displayViewAtIndex:(NSUInteger)index;
 @end
 
 @implementation UIBaseTabBarController
-@synthesize delegate = _delegate;
-@synthesize selectedViewController = _selectedViewController;
-@synthesize viewControllers = _viewControllers;
-@synthesize selectedIndex = _selectedIndex;
-@synthesize tabBarHidden = _tabBarHidden;
-@synthesize uiBaseTabBarView = _uiBaseTabBarView;
 
-#pragma mark -
-#pragma mark lifecycle
-- (void)initWithViewControllers:(NSArray *)arrayViewControllers itemDatas:(NSArray *)arrayItemDatas
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    _viewControllers = [NSMutableArray arrayWithArray:arrayViewControllers] ;
-    
-    _containerView = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    
-    _transitionView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _containerView.frame.size.width, _containerView.frame.size.height - [self getTabBarHeight])];
-    _transitionView.backgroundColor =  [UIColor groupTableViewBackgroundColor];
-    
-    _uiBaseTabBarView = [[UIBaseTabBarView alloc] initWithFrame:self rectTabBar:CGRectMake(0, _containerView.frame.size.height - [self getTabBarHeight], _containerView.frame.size.width, [self getTabBarHeight]) itemsDatas:arrayItemDatas];
-    
-    customTabBarController = self;
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
+-(id)init
+{
+    return [super init];
 }
 
 - (void)loadView
 {
-	[super loadView];
-	
-	[_containerView addSubview:_transitionView];
-	[_containerView addSubview:_uiBaseTabBarView];
-	self.view = _containerView;
+    [super loadView];
+    //    SkinObject *skinObject = [[SkinControllerCenter sharedInstance] getCurrentSkinObject];
+    if (self.navigationController != nil && self.navigationController.navigationBar != nil)
+    {
+        [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault]; //UIImageNamed:@"transparent.png"
+        self.navigationController.navigationBar.shadowImage = [UIImage new];
+        self.navigationController.navigationBar.translucent = YES;
+        [self.navigationController.view setBackgroundColor:[self updateNavigationViewBackgroundColor:self.navigationController.navigationBar]];
+        
+//        UIImage *imageBackground = [UIImage imageNamed:@"image_transparent"];
+//        [self.navigationController.navigationBar setShadowImage:[[UIImage alloc] init]];
+//        [self.navigationController.navigationBar setBackgroundImage:imageBackground forBarMetrics:UIBarMetricsDefault];
+//        [self.navigationController.navigationBar setTranslucent:YES];
+
+        [self.navigationController.navigationBar setTintColor:[self updateNavigationTintColor:self.navigationController.navigationBar]];
+        
+        [self.navigationController.navigationBar setBarTintColor:[self updateNavigationBarTintColor:self.navigationController.navigationBar]];
+        
+        [self.navigationController.navigationBar setTitleTextAttributes:[self updateNavigationBarTitleTextAttributes:self.navigationController.navigationBar]];
+        
+        [self updateNavigationBar:self.navigationController.navigationBar];
+    }
+    
+    // Do any additional setup after loading the view.// Navigation
+    [[SkinControllerCenter sharedInstance] addDelegate:self isOnlyExist:YES];
+    
+    //
+    [self registerForKeyboardNotifications];
 }
 
-- (void)viewDidLoad 
+- (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.selectedIndex = 0;
-}
-
-- (void)viewDidUnload
-{
-	[super viewDidUnload];
-	
-	_uiBaseTabBarView = nil;
-	_viewControllers = nil;
-}
-
-- (void)dealloc 
-{
-    _uiBaseTabBarView.delegate = nil;
-}
-
-#pragma mark - instant methods
-
-- (UIBaseTabBarView*)uiBaseTabBarView
-{
-	return _uiBaseTabBarView;
-}
-
-- (BOOL)tabBarTransparent
-{
-	return _tabBarTransparent;
-}
-
-- (NSUInteger)getTabBarHeight
-{
-    return kTabBarHeight;
-}
-
-- (void)setTabBarTransparent:(BOOL)yesOrNo
-{
-	if (yesOrNo == YES)
-	{
-		_transitionView.frame = _containerView.bounds;
-	}
-	else
-	{
-		_transitionView.frame = CGRectMake(0, 0, _containerView.frame.size.width, _containerView.frame.size.height - [self getTabBarHeight]);
-	}
-
-}
-
-- (void)hidesTabBar:(BOOL)yesOrNO animated:(BOOL)animated;
-{
-	if (yesOrNO == YES)
-	{
-		if (self.uiBaseTabBarView.frame.origin.y == self.view.frame.size.height)
-		{
-			return;
-		}
-	}
-	else 
-	{
-		if (self.uiBaseTabBarView.frame.origin.y == self.view.frame.size.height - [self getTabBarHeight])
-		{
-			return;
-		}
-	}
-	
-	if (animated == YES)
-	{
-		[UIView beginAnimations:nil context:NULL];
-		[UIView setAnimationDuration:0.3f];
-		if (yesOrNO == YES)
-		{
-			self.uiBaseTabBarView.frame = CGRectMake(self.uiBaseTabBarView.frame.origin.x, self.uiBaseTabBarView.frame.origin.y + [self getTabBarHeight], self.uiBaseTabBarView.frame.size.width, self.uiBaseTabBarView.frame.size.height);
-		}
-		else 
-		{
-			self.uiBaseTabBarView.frame = CGRectMake(self.uiBaseTabBarView.frame.origin.x, self.uiBaseTabBarView.frame.origin.y - [self getTabBarHeight], self.uiBaseTabBarView.frame.size.width, self.uiBaseTabBarView.frame.size.height);
-		}
-		[UIView commitAnimations];
-	}
-	else 
-	{
-		if (yesOrNO == YES)
-		{
-			self.uiBaseTabBarView.frame = CGRectMake(self.uiBaseTabBarView.frame.origin.x, self.uiBaseTabBarView.frame.origin.y + [self getTabBarHeight], self.uiBaseTabBarView.frame.size.width, self.uiBaseTabBarView.frame.size.height);
-		}
-		else 
-		{
-			self.uiBaseTabBarView.frame = CGRectMake(self.uiBaseTabBarView.frame.origin.x, self.uiBaseTabBarView.frame.origin.y - [self getTabBarHeight], self.uiBaseTabBarView.frame.size.width, self.uiBaseTabBarView.frame.size.height);
-		}
-	}
-}
-
-- (NSUInteger)selectedIndex
-{
-	return _selectedIndex;
-}
-- (UIViewController*)selectedViewController
-{
-    return [_viewControllers objectAtIndex:_selectedIndex];
-}
-
--(void)setSelectedIndex:(NSUInteger)index
-{
-    [self displayViewAtIndex:index];
-    [_uiBaseTabBarView selectTabAtIndex:index];
-}
-
-- (void)removeViewControllerAtIndex:(NSUInteger)index
-{
-    if (index >= [_viewControllers count])
-    {
-        return;
-    }
-    // Remove view from superview.
-    [[(UIViewController *)[_viewControllers objectAtIndex:index] view] removeFromSuperview];
-    // Remove viewcontroller in array.
-    [_viewControllers removeObjectAtIndex:index];
-    // Remove tab from tabbar.
-    [_uiBaseTabBarView removeTabAtIndex:index];
-}
-
-- (void)insertViewController:(UIViewController*)viewController withImageDic:(DatasTabBarItem*)datasTabBarItem atIndex:(NSUInteger)index
-{
-    [_viewControllers insertObject:viewController atIndex:index];
-    [_uiBaseTabBarView insertTabAtIndex:datasTabBarItem atIndex:index];
-}
-
-
-#pragma mark - Private methods
-- (void)displayViewAtIndex:(NSUInteger)index
-{
-    // Before changing index, ask the delegate should change the index.
-    if ([_delegate respondsToSelector:@selector(tabBarController:shouldSelectViewController:)]) 
-    {
-        if (![_delegate tabBarController:self shouldSelectViewController:[self.viewControllers objectAtIndex:index]])
-        {
-            return;
-        }
-    }
     
-    UIViewController *targetViewController = [self.viewControllers objectAtIndex:index];
 
-    // If target index is equal to current index.
-    if (_selectedIndex == index && [[_transitionView subviews] count] != 0) 
-    {
-        if ([targetViewController isKindOfClass:[UINavigationController class]]) {
-            [(UINavigationController*)targetViewController popToRootViewControllerAnimated:YES];
-        }
-        return;
-    }
-    _selectedIndex = index;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     
-	[_transitionView.subviews makeObjectsPerformSelector:@selector(setHidden:) withObject:(id)[NSNumber numberWithBool:YES]];
-    targetViewController.view.hidden = NO;
-	targetViewController.view.frame = _transitionView.frame;
-	if ([targetViewController.view isDescendantOfView:_transitionView]) 
-	{
-		[_transitionView bringSubviewToFront:targetViewController.view];
-	}
-	else
-	{
-		[_transitionView addSubview:targetViewController.view];
-	}
-    
-    // Notify the delegate, the viewcontroller has been changed.
-    if ([_delegate respondsToSelector:@selector(tabBarController:didSelectViewController:)]) 
+    // 初始化皮肤
+    SkinObject *skinObject = [[SkinControllerCenter sharedInstance] getCurrentSkinObject];
+    if (skinObject != nil)
     {
-        [_delegate tabBarController:self didSelectViewController:targetViewController];
+        [self updateViewControllerSkin:skinObject];
     }
 }
 
-#pragma mark -
-#pragma mark tabBar delegates
-- (void)initTabBarItem:(UIBaseTabBarView *)uiBaseTabBarView item:(TabBarItem*)tabBarItem indexCurrent:(NSInteger)index
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+//    NSString *strClassName = [NSString stringWithFormat:@"%@", self.class];
+//    [MobClick endLogPageView:strClassName];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
+//    [[SkinControllerCenter sharedInstance] removeDelegate:self];
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [[SkinControllerCenter sharedInstance] removeDelegate:self];
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+- (void)updateViewControllerSkin:(SkinObject*)skinObject
+{
+    [self.view setBackgroundColor:skinObject.backgroundColor];
+}
+
+- (void)updateNavigationBar:(UINavigationBar*)navigationBar
 {
     
 }
 
-- (void)removeTabBarItem:(UIBaseTabBarView *)uiBaseTabBarView item:(TabBarItem*)tabBarItem indexCurrent:(NSInteger)index
+- (UIColor*)updateNavigationViewBackgroundColor:(UINavigationBar*)navigationBar
 {
-    
+    SkinObject *skinObject = [[SkinControllerCenter sharedInstance] getCurrentSkinObject];
+    return skinObject.backgroundColor;
 }
 
-- (void)didSelectTabBarItem:(UIBaseTabBarView *)uiBaseTabBarView item:(TabBarItem*)tabBarItem didSelectIndex:(NSInteger)index
+- (UIColor*)updateNavigationTintColor:(UINavigationBar*)navigationBar
 {
-	[self displayViewAtIndex:index];
+    return [UIColor whiteColor];
+//    SkinObject *skinObject = [[SkinControllerCenter sharedInstance] getCurrentSkinObject];
+//    return skinObject.backgroundColor;
+}
+
+- (UIColor*)updateNavigationBarTintColor:(UINavigationBar*)navigationBar
+{
+    SkinObject *skinObject = [[SkinControllerCenter sharedInstance] getCurrentSkinObject];
+    return skinObject.backgroundColor;
+}
+
+- (NSDictionary*)updateNavigationBarTitleTextAttributes:(UINavigationBar*)navigationBar
+{
+    return @{NSFontAttributeName:[self updateNavigationBarTitleTextFont:navigationBar], NSForegroundColorAttributeName:[self updateNavigationBarTitleTextColor:navigationBar]};
+}
+
+- (UIFont*)updateNavigationBarTitleTextFont:(UINavigationBar*)navigationBar
+{
+    return [UIFont boldSystemFontOfSize:[self updateNavigationBarTitleTextFontSize:navigationBar]];
+}
+
+- (CGFloat)updateNavigationBarTitleTextFontSize:(UINavigationBar*)navigationBar
+{
+    return 19;
+}
+
+- (UIColor*)updateNavigationBarTitleTextColor:(UINavigationBar*)navigationBar
+{
+    return [UIColor whiteColor];
+}
+
+
+- (void)registerForKeyboardNotifications
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardWillShowNotification object:nil];  ;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasHidden:) name:UIKeyboardDidHideNotification object:nil];
+}
+
+- (void)keyboardWasShown:(NSNotification*)notification
+{
+    if (notification == nil)
+    {
+        return ;
+    }
+        
+    NSDictionary *dictionaryUserInfo = [notification userInfo];
+    if (dictionaryUserInfo == nil)
+    {
+        return ;
+    }
+    NSValue *valueKeyBoardFrame = [dictionaryUserInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
+    if (valueKeyBoardFrame == nil)
+    {
+        return ;
+    }
+    CGSize keyboardSizeTemp = [valueKeyBoardFrame CGRectValue].size;
+    keyboardSize.width = keyboardSizeTemp.width;
+    keyboardSize.height = keyboardSizeTemp.height;
+    
+    isKeyBoardShowed = YES;
+}
+- (void) keyboardWasHidden:(NSNotification*)notification
+{
+    if (notification == nil)
+    {
+        return ;
+    }
+    
+    NSDictionary *dictionaryUserInfo = [notification userInfo];
+    if (dictionaryUserInfo == nil)
+    {
+        return ;
+    }
+    NSValue *valueKeyBoardFrame = [dictionaryUserInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
+    if (valueKeyBoardFrame == nil)
+    {
+        return ;
+    }
+    CGSize keyboardSizeTemp = [valueKeyBoardFrame CGRectValue].size;
+    keyboardSize.width = keyboardSizeTemp.width;
+    keyboardSize.height = keyboardSizeTemp.height;
+    
+    isKeyBoardShowed = NO;
 }
 
 @end
